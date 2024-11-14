@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import bibliotecaPDI as bP
 
 def main_menu():
