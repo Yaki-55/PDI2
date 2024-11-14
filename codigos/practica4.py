@@ -29,7 +29,7 @@ def main_menu():
         
         elif choice == '3' and 'image' in locals():
             clip_limit= float(input('Limite de recorte (El valor predeterminado es 2.0): '))
-            matrix = int(input('Tamaño de la matriz (El valor predeterminado es 8, para una 8x8): '))
+            matrix = int(input('Tamaño de la matriz (ej. 3 para 3x3): '))
             transformed_image = bP.local_histogram_equalization(image, clip_limit=clip_limit, tile_grid_size=(matrix, matrix))
             bP.display_results(image, transformed_image, "Ecualización de Histograma Local")
         
@@ -38,8 +38,8 @@ def main_menu():
             print(f"Media Global: {mean:.2f}, Varianza Global: {variance:.2f}")
         
         elif choice == '5' and 'image' in locals():
-            kernel_size = (3, 3)
-            mean_local, variance_local = bP.local_mean_and_variance(image, kernel_size)
+            kernel_size = int(input("Ingresa el tamaño de la vecindad (ej. 3 para 3x3): "))
+            mean_local, variance_local = bP.local_mean_and_variance(image, (kernel_size, kernel_size))
             bP.display_results(image, mean_local, "Media Local")
             bP.display_results(image, variance_local, "Varianza Local")
 
