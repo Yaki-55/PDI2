@@ -10,7 +10,7 @@ def global_histogram_equalization(image):
     :return: Imagen con histograma ecualizado globalmente.
     """
     return cv2.equalizeHist(image)
-
+1
 def local_histogram_equalization(image, clip_limit=2.0, tile_grid_size=(8, 8)):
     """
     Aplica la ecualización de histograma local (CLAHE) a una imagen en escala de grises.
@@ -74,7 +74,7 @@ def enhanced_contrast_filter(image, E, k0, k1, k2, mask_size=(3, 3)):
             v_sxy = np.var(neighborhood)
             
             if m_sxy <= k0 * m_g and k1 * v_g <= v_sxy <= k2 * v_g:
-                result[y - pad_y, x - pad_x] = E * image[y - pad_y, x - pad_x]
+                result[y - pad_y, x - pad_x] = np.clip(E * image[y - pad_y, x - pad_x], 0, 255)
             else:
                 result[y - pad_y, x - pad_x] = image[y - pad_y, x - pad_x]
 
@@ -132,3 +132,12 @@ def display_image(image, title="Imagen"):
     plt.title(title)
     plt.axis('off')
     plt.show()
+
+def are_images_equal(img1, img2):
+    """
+    Compara si dos imágenes son exactamente iguales.
+    :param img1: Primera imagen (numpy array).
+    :param img2: Segunda imagen (numpy array).
+    :return: True si son iguales, False en caso contrario.
+    """
+    return np.array_equal(img1, img2)

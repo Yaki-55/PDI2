@@ -49,6 +49,8 @@ def main_menu():
             k2 = float(input("Ingrese el valor de k2: "))
             mask_size = int(input("Ingrese el tamaño de la máscara (ej. 3 para 3x3): "))
             transformed_image = bP.enhanced_contrast_filter(image, E, k0, k1, k2, (mask_size, mask_size))
+            if(bP.are_images_equal(transformed_image, image)):
+                print("Es lo mismo")
             bP.display_results(image, transformed_image, "Realce de Contraste con Filtro Mejorado")
         
         elif choice == '7' and 'image' in locals():
