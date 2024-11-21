@@ -244,6 +244,14 @@ def sumar_imagenes(image1, image2, alpha=0.5, beta=0.5, gamma=0):
     return resultado.astype(np.uint8)
 
 def sumar_imagenes2(img1, img2=None, valor=0):
+    """
+    Suma dos imágenes utilizando OpenCV.
+
+    :param image1: Primera imagen (2D array o 3D array para imágenes RGB).
+    :param image2: Segunda imagen (2D array o 3D array para imágenes RGB).
+    :param valor: Valor escalar para sumar una constante a la imagen (por defecto 0).
+    :return: Imagen resultante de la suma.
+    """
     if img2 is not None:
         # Suma de dos imágenes
         return cv2.add(img1, img2)

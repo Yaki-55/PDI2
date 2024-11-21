@@ -56,7 +56,7 @@ def main_menu():
             transformed_image2 = bP.sumar_imagenes2(image, transformed_image)
             if(bP.are_images_equal(transformed_image, image)):
                 print("Son la misma imagen")
-            bP.display_image(transformed_image, title="Filtro laplaciano puro")
+            bP.display_image(transformed_image, title="Filtro laplaciano puro despues del escalamiento abs")
             bP.display_results(image, transformed_image2, "Filtro laplaciano sumado a la imagen original")
         
         elif choice == '7' and 'image' in locals():
@@ -64,7 +64,7 @@ def main_menu():
             transformed_image2 = bP.sumar_imagenes2(image, transformed_image)
             if(bP.are_images_equal(transformed_image, image)):
                 print("Son la misma imagen")
-            bP.display_image(transformed_image, title="Filtro del gradiente puro")
+            bP.display_image(transformed_image, title="Filtro del gradiente puro despues del escalamiento abs")
             bP.display_results(image, transformed_image2, "Filtro del gradiente")
 
         elif choice == '8' and 'image' in locals():
