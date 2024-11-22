@@ -10,7 +10,8 @@ def main_menu():
         print("5. Filtro del minimo")
         print("6. Filtro Laplaciano")
         print("7. Filtro Gradiente")
-        print("8. Mostrar imagen cargada")
+        print("8. Filtro Gradiente_Suavizado x Laplaciano")
+        print("9. Mostrar imagen cargada")
         print("0. Salir")
         choice = input("Elige una opción: ")
 
@@ -68,6 +69,13 @@ def main_menu():
             bP.display_results(image, transformed_image2, "Filtro del gradiente")
 
         elif choice == '8' and 'image' in locals():
+            kernel_size = int(input("Ingresa el tamaño del filtro para el gradiente suavizado(ej. 3 para 3x3): "))
+            transformed_image = bP.funcionConNombreOlvidado(image, kernel_size=kernel_size)
+            if(bP.are_images_equal(transformed_image, image)):
+                print("Son la misma imagen")
+            bP.display_results(image, transformed_image, "Filtro Gradiente Suavizado por filtro Laplaciano")
+        
+        elif choice == '9' and 'image' in locals():
             bP.display_image(image)
         
         elif choice == '0':
