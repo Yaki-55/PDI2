@@ -261,3 +261,37 @@ def sumar_imagenes2(img1, img2=None, valor=0):
 
 def escalamiento_abs(image):
     return cv2.convertScaleAbs(image)
+
+def gradiente_suavizado(image, kernel_size):
+    """
+    Gradiente suavizado utilizando OpenCV.
+
+    :param image1: Primera imagen 2D array.
+    :param kernel_size: Valor del kernel para aplicar al promedio.
+    :return: Imagen resultante del filtro.
+    """
+    transformed_image = filtro_gradiente(image)
+    transformed_image2 = filtro_promedio(image = image, kernel_size=kernel_size)
+    return sumar_imagenes2(transformed_image, transformed_image2)
+
+def multiplicar_imagenes(image1, image2):
+    """
+    Multiplicacion de imagenes pixel a pixel utilizando OpenCV.
+
+    :param image1: Primera imagen 2D array.
+    :param image2: Segunda imagen 2D array.
+    :return: Imagen resultante de la multiplicacion.
+    """
+    return cv2.multiply(image1, image2)
+
+def funcionConNombreOlvidado(image, kernel_size):
+    """
+    Filtro Barbosin utilizando OpenCV.
+
+    :param image: Imagen 2D array para aplicar el filtro.
+    :param kernel_size: Tamaño del kernel para el gradiente suavizado.
+    :return: Imagen resultante de la aplicacion del filtro.
+    """
+    transformed_image = gradiente_suavizado(image=image, kernel_size=kernel_size)
+    transformed_image2 = filtro_laplaciano(image)
+    return multiplicar_imagenes(transformed_image, transformed_image2)
