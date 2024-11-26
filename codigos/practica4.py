@@ -16,7 +16,9 @@ def main_menu():
         if choice == '1':
             image = bP.load_image()
             if image is not None:
+                print("-"*32)
                 print("Imagen cargada correctamente.")
+                print("-"*32)
             else:
                 print("-"*32)
                 print("No se pudo cargar la imagen.")

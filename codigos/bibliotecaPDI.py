@@ -10,7 +10,7 @@ def global_histogram_equalization(image):
     :return: Imagen con histograma ecualizado globalmente.
     """
     return cv2.equalizeHist(image)
-1
+
 def local_histogram_equalization(image, clip_limit=2.0, tile_grid_size=(8, 8)):
     """
     Aplica la ecualización de histograma local (CLAHE) a una imagen en escala de grises.
