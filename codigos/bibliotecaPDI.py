@@ -86,6 +86,7 @@ def load_image():
     print("2. Imagen de baja iluminacion")
     print("3. Imagen de alto contraste")
     print("4. Imagen de bajo contraste")
+    print("5. Imagen grieta (RGB)")
     option = input("Selecciona tu imagen: ")
     if option == '1':
         image = cv2.imread("../imagenesPractica4/altaIluminacion.jpg", cv2.IMREAD_GRAYSCALE)
@@ -95,6 +96,8 @@ def load_image():
         image = cv2.imread("../imagenesPractica4/altoContraste.png", cv2.IMREAD_GRAYSCALE)
     elif option == '4':
         image = cv2.imread("../imagenesPractica4/bajoContraste.png", cv2.IMREAD_GRAYSCALE)
+    elif option == '5':
+        image = cv2.imread("../imagenesPractica4/grieta1.jpg")
     else:
         print("Seleccion invalida")
         return None
@@ -119,6 +122,54 @@ def display_results(original, transformed, title):
     axs[1, 1].set_title("Histograma Transformado")
 
     plt.tight_layout()
+    plt.show()
+
+def display_color_results(original, transformed, title):
+    original_rgb = cv2.cvtColor(original, cv2.COLOR_BGR2RGB)
+    #transformed_rgb = cv2.cvtColor(transformed, cv2.COLOR_BGR2RGB)
+
+    fig, axs = plt.subplots(2, 2, figsize=(10, 8))
+    fig.suptitle(title, fontsize=16)
+
+    axs[0, 0].imshow(original_rgb)
+    axs[0, 0].set_title("Imagen Original")
+    axs[0, 0].axis('off')
+    
+    axs[1, 0].hist(original.ravel(), bins=256, range=(0, 256), color='black')
+    axs[1, 0].set_title("Histograma Original")
+
+    axs[0, 1].imshow(transformed)
+    axs[0, 1].set_title("Imagen Transformada")
+    axs[0, 1].axis('off')
+
+    axs[1, 1].hist(transformed.ravel(), bins=256, range=(0, 256), color='black')
+    axs[1, 1].set_title("Histograma Transformado")
+
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
+    plt.show()
+
+def display_color_results2(original, transformed, title):
+    original_rgb = cv2.cvtColor(original, cv2.COLOR_BGR2RGB)
+    transformed_rgb = cv2.cvtColor(transformed, cv2.COLOR_BGR2RGB)
+
+    fig, axs = plt.subplots(2, 2, figsize=(10, 8))
+    fig.suptitle(title, fontsize=16)
+
+    axs[0, 0].imshow(original_rgb)
+    axs[0, 0].set_title("Imagen Original")
+    axs[0, 0].axis('off')
+    
+    axs[1, 0].hist(original.ravel(), bins=256, range=(0, 256), color='black')
+    axs[1, 0].set_title("Histograma Original")
+
+    axs[0, 1].imshow(transformed_rgb)
+    axs[0, 1].set_title("Imagen Transformada")
+    axs[0, 1].axis('off')
+
+    axs[1, 1].hist(transformed.ravel(), bins=256, range=(0, 256), color='black')
+    axs[1, 1].set_title("Histograma Transformado")
+
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.show()
 
 def display_image(image, title="Imagen"):
@@ -261,3 +312,125 @@ def sumar_imagenes2(img1, img2=None, valor=0):
 
 def escalamiento_abs(image):
     return cv2.convertScaleAbs(image)
+
+def gradiente_suavizado(image, kernel_size):
+    """
+    Gradiente suavizado utilizando OpenCV.
+
+    :param image1: Primera imagen 2D array.
+    :param kernel_size: Valor del kernel para aplicar al promedio.
+    :return: Imagen resultante del filtro.
+    """
+    transformed_image = filtro_gradiente(image)
+    transformed_image2 = filtro_promedio(image = image, kernel_size=kernel_size)
+    return sumar_imagenes2(transformed_image, transformed_image2)
+
+def multiplicar_imagenes(image1, image2):
+    """
+    Multiplicacion de imagenes pixel a pixel utilizando OpenCV.
+
+    :param image1: Primera imagen 2D array.
+    :param image2: Segunda imagen 2D array.
+    :return: Imagen resultante de la multiplicacion.
+    """
+    return cv2.multiply(image1, image2)
+
+def funcionConNombreOlvidado(image, kernel_size):
+    """
+    Filtro Barbosin utilizando OpenCV.
+
+    :param image: Imagen 2D array para aplicar el filtro.
+    :param kernel_size: Tamaño del kernel para el gradiente suavizado.
+    :return: Imagen resultante de la aplicacion del filtro.
+    """
+    transformed_image = gradiente_suavizado(image=image, kernel_size=kernel_size)
+    transformed_image2 = filtro_laplaciano(image)
+    return multiplicar_imagenes(transformed_image, transformed_image2)
+
+def underwater_effect(image):
+    # Ajuste de color (dar un tinte azulado y reducir los rojos)
+    hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    hue_shift = 20  # Cambia el tono hacia el azul
+    hsv_image[..., 0] = (hsv_image[..., 0] + hue_shift) % 180
+    hsv_image[..., 1] = cv2.add(hsv_image[..., 1], 30)  # Aumentar saturación
+    adjusted_image = cv2.cvtColor(hsv_image, cv2.COLOR_HSV2BGR)
+
+    # Aplicar desenfoque para simular el agua
+    blurred_image = cv2.GaussianBlur(adjusted_image, (15, 15), 0)
+
+    # Añadir ondas (distorsión) para simular el movimiento del agua
+    rows, cols = blurred_image.shape[:2]
+    wave_x = np.zeros((rows, cols), dtype=np.float32)
+    wave_y = np.zeros((rows, cols), dtype=np.float32)
+    for i in range(rows):
+        for j in range(cols):
+            wave_x[i, j] = j + 10 * np.sin(2 * np.pi * i / 50)
+            wave_y[i, j] = i + 5 * np.sin(2 * np.pi * j / 50)
+
+    map_x = wave_x.astype(np.float32)
+    map_y = wave_y.astype(np.float32)
+    distorted_image = cv2.remap(blurred_image, map_x, map_y, interpolation=cv2.INTER_LINEAR)
+    
+    return distorted_image
+
+def apply_gaussian_blur(image, kernel_size=(5, 5)):
+    """
+    Aplica desenfoque gaussiano a la imagen.
+    
+    :param image: Imagen cargada con cv2.imread().
+    :param kernel_size: Tamaño del kernel (debe ser impar, p.ej., (3, 3), (5, 5)).
+    :return: Imagen desenfocada.
+    """
+    blurred_image = cv2.GaussianBlur(image, kernel_size, 0)
+    return blurred_image
+
+def apply_perspective_transform(image, src_points, dst_points):
+    """
+    Aplica un cambio de perspectiva a la imagen.
+    
+    :param image: Imagen cargada con cv2.imread().
+    :param src_points: Puntos de origen (cuatro esquinas en la imagen original).
+    :param dst_points: Puntos de destino (cuatro esquinas en la imagen transformada).
+    :return: Imagen con cambio de perspectiva.
+    """
+    # Obtener la matriz de transformación de perspectiva
+    matrix = cv2.getPerspectiveTransform(src_points, dst_points)
+    
+    # Dimensiones de la imagen original
+    (h, w) = image.shape[:2]
+    
+    # Aplicar la transformación
+    warped_image = cv2.warpPerspective(image, matrix, (w, h))
+    return warped_image
+
+def rotate_image(image, angle):
+    """
+    Rota una imagen en un ángulo especificado.
+
+    :param image: Imagen cargada con cv2.imread().
+    :param angle: Ángulo en grados para rotar la imagen (positivo para rotación en sentido antihorario).
+    :return: Imagen rotada.
+    """
+    # Obtener las dimensiones de la imagen
+    (h, w) = image.shape[:2]
+
+    # Calcular el centro de la imagen
+    center = (w // 2, h // 2)
+
+    # Crear la matriz de rotación
+    rotation_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
+
+    # Determinar el tamaño de la nueva imagen para evitar recortes
+    abs_cos = abs(rotation_matrix[0, 0])
+    abs_sin = abs(rotation_matrix[0, 1])
+    new_w = int(h * abs_sin + w * abs_cos)
+    new_h = int(h * abs_cos + w * abs_sin)
+
+    # Ajustar la matriz de rotación para el nuevo tamaño
+    rotation_matrix[0, 2] += (new_w / 2) - center[0]
+    rotation_matrix[1, 2] += (new_h / 2) - center[1]
+
+    # Aplicar la rotación
+    rotated_image = cv2.warpAffine(image, rotation_matrix, (new_w, new_h))
+
+    return rotated_image
