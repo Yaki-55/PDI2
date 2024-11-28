@@ -460,6 +460,8 @@ def process_images(input_folder):
         globalhist = global_histogram_equalization(image)
         localhist = local_histogram_equalization(image)
         localmean, local_variance = local_mean_and_variance(image)
+        localmean = sumar_imagenes2(image, localmean)
+        local_variance = sumar_imagenes2(image, local_variance)
         mean_filter = filtro_promedio(image)
         median_filter = filtro_mediano(image)
         gradiente = sumar_imagenes2(image, escalamiento_abs(filtro_gradiente(image)))
