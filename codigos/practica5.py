@@ -70,7 +70,7 @@ def main_menu():
 
         elif choice == '8' and 'image' in locals():
             kernel_size = int(input("Ingresa el tamaño del filtro para el gradiente suavizado(ej. 3 para 3x3): "))
-            transformed_image = bP.funcionConNombreOlvidado(image, kernel_size=kernel_size)
+            transformed_image = bP.sumar_imagenes2(image, bP.funcionConNombreOlvidado(image, kernel_size=kernel_size))
             if(bP.are_images_equal(transformed_image, image)):
                 print("Son la misma imagen")
             bP.display_results(image, transformed_image, "Filtro Gradiente Suavizado por filtro Laplaciano")

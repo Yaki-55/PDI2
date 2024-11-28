@@ -321,7 +321,7 @@ def gradiente_suavizado(image, kernel_size):
     :param kernel_size: Valor del kernel para aplicar al promedio.
     :return: Imagen resultante del filtro.
     """
-    transformed_image = filtro_gradiente(image)
+    transformed_image = escalamiento_abs(filtro_gradiente(image))
     transformed_image2 = filtro_promedio(image = image, kernel_size=kernel_size)
     return sumar_imagenes2(transformed_image, transformed_image2)
 
@@ -344,7 +344,7 @@ def funcionConNombreOlvidado(image, kernel_size):
     :return: Imagen resultante de la aplicacion del filtro.
     """
     transformed_image = gradiente_suavizado(image=image, kernel_size=kernel_size)
-    transformed_image2 = filtro_laplaciano(image)
+    transformed_image2 = escalamiento_abs(filtro_laplaciano(image))
     return multiplicar_imagenes(transformed_image, transformed_image2)
 
 def underwater_effect(image):
@@ -454,7 +454,7 @@ def process_images(input_folder):
         output_folder.mkdir(exist_ok=True)
 
         # Aplicar transformaciones
-        laplacian = sumar_imagenes2(image, filtro_laplaciano(image))
+        laplacian = sumar_imagenes2(image, escalamiento_abs(filtro_laplaciano(image)))
         max_filter = filtro_maximo(image, 3)
         min_filter = filtro_minimo(image, 3)
         globalhist = global_histogram_equalization(image)
@@ -462,8 +462,8 @@ def process_images(input_folder):
         localmean, local_variance = local_mean_and_variance(image)
         mean_filter = filtro_promedio(image)
         median_filter = filtro_mediano(image)
-        gradiente = sumar_imagenes2(image, filtro_gradiente(image))
-        gradientedotlaplacian = funcionConNombreOlvidado(image, 3)
+        gradiente = sumar_imagenes2(image, escalamiento_abs(filtro_gradiente(image)))
+        gradientedotlaplacian = sumar_imagenes2(image, funcionConNombreOlvidado(image, 3))
 
 
         # Guardar resultados
