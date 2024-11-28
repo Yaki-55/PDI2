@@ -434,3 +434,49 @@ def rotate_image(image, angle):
     rotated_image = cv2.warpAffine(image, rotation_matrix, (new_w, new_h))
 
     return rotated_image
+
+def process_images(input_folder):
+    # Crear directorio de salida si no existe
+    input_path = Path(input_folder)
+    if not input_path.exists():
+        print(f"La carpeta {input_folder} no existe.")
+        return
+
+    for image_path in input_path.glob("*.jpg"):  # Procesar solo imágenes .jpg
+        # Cargar imagen
+        image = cv2.imread(str(image_path), cv2.IMREAD_GRAYSCALE)
+        if image is None:
+            print(f"No se pudo cargar la imagen {image_path}")
+            continue
+
+        # Crear subcarpeta para guardar los resultados
+        output_folder = input_path / image_path.stem
+        output_folder.mkdir(exist_ok=True)
+
+        # Aplicar transformaciones
+        laplacian = sumar_imagenes2(image, filtro_laplaciano(image))
+        max_filter = filtro_maximo(image, 3)
+        min_filter = filtro_minimo(image, 3)
+        globalhist = global_histogram_equalization(image)
+        localhist = local_histogram_equalization(image)
+        localmean, local_variance = local_mean_and_variance(image)
+        mean_filter = filtro_promedio(image)
+        median_filter = filtro_mediano(image)
+        gradiente = sumar_imagenes2(image, filtro_gradiente(image))
+        gradientedotlaplacian = funcionConNombreOlvidado(image, 3)
+
+
+        # Guardar resultados
+        cv2.imwrite(str(output_folder / f"{image_path.stem}Laplaciana.png"), laplacian)
+        cv2.imwrite(str(output_folder / f"{image_path.stem}Maxima.png"), max_filter)
+        cv2.imwrite(str(output_folder / f"{image_path.stem}Minima.png"), min_filter)
+        cv2.imwrite(str(output_folder / f"{image_path.stem}global_histograma.png"), globalhist)
+        cv2.imwrite(str(output_folder / f"{image_path.stem}local_histograma.png"), localhist)
+        cv2.imwrite(str(output_folder / f"{image_path.stem}mediano.png"), median_filter)
+        cv2.imwrite(str(output_folder / f"{image_path.stem}promedio.png"), mean_filter)
+        cv2.imwrite(str(output_folder / f"{image_path.stem}gradiente.png"), gradiente)
+        cv2.imwrite(str(output_folder / f"{image_path.stem}gradiente_laplaciano.png"), gradientedotlaplacian)
+        cv2.imwrite(str(output_folder / f"{image_path.stem}local_mean.png"), localmean)
+        cv2.imwrite(str(output_folder / f"{image_path.stem}local_variance.png"), local_variance)
+
+        print(f"Transformaciones guardadas en {output_folder}")
