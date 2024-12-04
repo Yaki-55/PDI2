@@ -9,7 +9,7 @@ def create_butterworth_low_pass_filter(width, height, d, n):
     
     for i in range(0, lp_filter.shape[1]):
         for j in range(0, lp_filter.shape[0]):
-            radius = max(1, math.sqrt(math.pow((i-centre[0]), 2.0)+ math.pow))
+            radius = max(1, math.sqrt(math.pow((i-centre[0]), 2.0)+ math.pow((j-centre[1]), 2.0)))
             lp_filter[j, i] = 1 / (1+math.pow((radius/d), (2*n)))
     
     return lp_filter
