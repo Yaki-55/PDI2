@@ -13,3 +13,10 @@ def create_butterworth_low_pass_filter(width, height, d, n):
             lp_filter[j, i] = 1 / (1+math.pow((radius/d), (2*n)))
     
     return lp_filter
+
+def butterworth_high_pass_filter(width, height, d, n):
+    return 1 - (create_butterworth_low_pass_filter(width, height, d, n))
+
+def create_gaussian_low_pass_filter(width, height, d, n):
+    ##Future implements
+    return None
