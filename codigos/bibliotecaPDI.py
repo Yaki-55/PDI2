@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import retinex as rt
 from pathlib import Path
 
 def global_histogram_equalization(image):
@@ -466,6 +467,7 @@ def process_images(input_folder):
         median_filter = filtro_mediano(image)
         gradiente = sumar_imagenes2(image, escalamiento_abs(filtro_gradiente(image)))
         gradientedotlaplacian = sumar_imagenes2(image, funcionConNombreOlvidado(image, 3))
+        SSR = rt.SSR()
 
 
         # Guardar resultados
