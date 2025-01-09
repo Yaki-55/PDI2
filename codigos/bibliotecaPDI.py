@@ -437,6 +437,9 @@ def rotate_image(image, angle):
     return rotated_image
 
 def process_images(input_folder):
+    #Variables para retinex
+    variance_list=[15, 80, 30]
+    variance=300
     # Crear directorio de salida si no existe
     input_path = Path(input_folder)
     if not input_path.exists():
@@ -467,7 +470,8 @@ def process_images(input_folder):
         median_filter = filtro_mediano(image)
         gradiente = sumar_imagenes2(image, escalamiento_abs(filtro_gradiente(image)))
         gradientedotlaplacian = sumar_imagenes2(image, funcionConNombreOlvidado(image, 3))
-        SSR = rt.SSR()
+        SSR = rt.SSR(image, variance)
+        MSR = rt.MSR(image, variance_list)
 
 
         # Guardar resultados
@@ -482,5 +486,7 @@ def process_images(input_folder):
         cv2.imwrite(str(output_folder / f"{image_path.stem}gradiente_laplaciano.png"), gradientedotlaplacian)
         cv2.imwrite(str(output_folder / f"{image_path.stem}local_mean.png"), localmean)
         cv2.imwrite(str(output_folder / f"{image_path.stem}local_variance.png"), local_variance)
+        cv2.imwrite(str(output_folder / f"{image_path.stem}retinex.png"), SSR)
+        cv2.imwrite(str(output_folder / f"{image_path.stem}multipleretinex.png"), MSR)
 
         print(f"Transformaciones guardadas en {output_folder}")
